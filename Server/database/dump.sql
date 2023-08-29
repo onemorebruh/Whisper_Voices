@@ -24,10 +24,11 @@ DROP TABLE IF EXISTS `user`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user` (
   `id` uuid NOT NULL,
-  `tag` varchar(50) DEFAULT NULL,
-  `clear_on_exit` tinyint(1) DEFAULT 1,
-  `allow_screenshot` tinyint(1) DEFAULT 0,
-  PRIMARY KEY (`id`)
+  `tag` varchar(50) NOT NULL,
+  `allow_history` tinyint(1) NOT NULL DEFAULT 0,
+  `allow_screenshot` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `tag` (`tag`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -49,4 +50,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-08-27 12:00:09
+-- Dump completed on 2023-08-30  1:55:52

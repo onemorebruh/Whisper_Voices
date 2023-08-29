@@ -10,7 +10,9 @@
 package main
 
 import (
+	User "Server/database/models"
 	"database/sql"
+	"fmt"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
@@ -31,4 +33,21 @@ func main() {
 		panic(err.Error())
 	}
 	defer insert.Close()
+
+	results, err := db.Query("SELECT * FROM user")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	for results.Next() {
+		user := User.User{}
+
+		err = results.Scan(&user.id, &user.tag, &user.allow_hostory, &user.allow_screenshot)
+		if err != nil {
+			panic(err.Error())
+		}
+
+		fmt.Println(user)
+	}
+
 }
