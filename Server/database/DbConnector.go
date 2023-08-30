@@ -10,13 +10,19 @@
 package main
 
 import (
-	User "Server/database/models"
 	"database/sql"
 	"fmt"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
 )
+
+type User struct {
+	id               uuid.UUID
+	tag              string
+	allow_hostory    bool
+	allow_screenshot bool
+}
 
 func main() {
 	db, err := sql.Open("mysql", "whisper_voices:wh15p3r_v01c35@tcp(localhost:3306)/whisper_voices")
@@ -40,7 +46,7 @@ func main() {
 	}
 
 	for results.Next() {
-		user := User.User{}
+		var user User
 
 		err = results.Scan(&user.id, &user.tag, &user.allow_hostory, &user.allow_screenshot)
 		if err != nil {

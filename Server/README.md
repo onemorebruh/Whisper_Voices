@@ -31,7 +31,7 @@ Here you can read about each scheme Server uses
 ## TODO
 
 Database
-- [ ] fix User struct issue so DbConnector class will see User's fields
+- [ ] move user model to separate file
 - [ ] build DbConnector as a class but not a script as it is now
 - [ ] add abbility to add new user to DbConnector
 - [ ] add abbility to get user by tag to DbConnector
