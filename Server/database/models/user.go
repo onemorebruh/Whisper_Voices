@@ -8,7 +8,7 @@
 // This is a class of service's user.
 // It is used for working with database
 
-package User
+package user
 
 import "github.com/google/uuid"
 
