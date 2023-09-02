@@ -10,11 +10,8 @@
 package main
 
 import (
-	database_response "Server/database"
 	"database/sql"
 	"fmt"
-
-	//user "Server/database/models"
 
 	_ "github.com/go-sql-driver/mysql"
 )

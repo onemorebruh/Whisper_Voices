@@ -2,7 +2,7 @@
 
 ## About
 
-This is an anonimous massanger you can host by yoursekl to make sure no one tracks your messages
+This is an anonimous massanger you can host by yourself to make sure no one tracks your messages
 
 In this project you can find: 
 - `Server` - programm which gets your messages and sends it to the other user
