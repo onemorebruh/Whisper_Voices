@@ -10,6 +10,8 @@
 package main
 
 import (
+	DatabaseResponse "DBC"
+	Models "DBC"
 	"database/sql"
 	"fmt"
 
@@ -36,9 +38,9 @@ func (connection_settings *ConnectionSettings) is_set() bool { //helps to check 
 	}
 }
 
-func (connection_settings *ConnectionSettings) does_user_exist(tag string) DatabaseResponse {
-	response := database_response.DatabaseResponse
-	user := User //not actually used for now
+func (connection_settings *ConnectionSettings) does_user_exist(tag string) DatabaseResponse.DatabaseResponse {
+	response := DatabaseResponse.DatabaseResponse
+	user := Models.User //not actually used for now
 	if connection_settings.is_set() {
 		db, error := sql.Open("mysql", fmt.Sprintf("?:?@tcp(?:?)/?", connection_settings.user, connection_settings.password, connection_settings.host, connection_settings.port, connection_settings.database)) //NOTE i am not sure will it work or not. if it doesn't just change ? to %U in this line
 
@@ -66,8 +68,8 @@ func (connection_settings *ConnectionSettings) does_user_exist(tag string) Datab
 	return response
 }
 
-func (connection_settings *ConnectionSettings) addUser(tag string) database_response.DatabaseResponse {
-	response := database_response.DatabaseResponse
+func (connection_settings *ConnectionSettings) addUser(tag string) DatabaseResponse.DatabaseResponse {
+	response := DatabaseResponse.DatabaseResponse
 	//check if sattings are not empty
 	if connection_settings.is_set() {
 		//get user by tag to check if tag is available

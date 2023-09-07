@@ -1,4 +1,4 @@
-package database_response
+package DatabaseResponse
 
 import User "Server/database/models"
 
