@@ -12,9 +12,9 @@ package DatabaseModels
 
 import "github.com/google/uuid"
 
-type User struct {
-	id               uuid.UUID
-	tag              string
-	allow_hostory    bool
-	allow_screenshot bool
+type User struct { //NOTE all properites are public which is not really secure
+	Id               uuid.UUID
+	Tag              string
+	Allow_hostory    bool
+	Allow_screenshot bool
 }
