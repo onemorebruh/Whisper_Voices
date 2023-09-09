@@ -1,6 +1,6 @@
 package DatabaseResponse
 
-import User "DBC/DatabaseModels"
+import User "Server/database/DatabaseModels"
 
 type DatabaseResponse struct {
 	Message       string
