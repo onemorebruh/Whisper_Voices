@@ -14,8 +14,8 @@ In this project you can find:
 Server
 - [ ] make it get http(s)? requests
 - [ ] make it send http(s)? requests
-- [ ] make it create new users in database
-- [ ] make it read user by tag
+- [x] make it create new users in database
+- [x] make it read user by tag
 
 DesktopClient
 - [ ] design it
