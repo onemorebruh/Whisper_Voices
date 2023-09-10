@@ -98,11 +98,9 @@ Database
 - [x] add abbility to add new user to DbConnector
 - [x] add abbility to get user by tag to DbConnector
 
-Listener
-- [ ] build
-
-Responder
-- [ ] build
+Controller
+- [ ] design
+- [ ] add https support
 
 main.go
 - [ ] gather all the components to the programm
