@@ -11,7 +11,6 @@ package main
 
 import (
 	"Server/Controller"
-	DatabaseConnector "Server/database"
 	"errors"
 	"fmt"
 	"net/http"
@@ -20,8 +19,6 @@ import (
 
 func main() {
 	http.HandleFunc("/", Controller.Get_message)
-
-	go DatabaseConnector.Goroutine(Controller.Database_channel)
 
 	err := http.ListenAndServe(":8080", nil)
 	if errors.Is(err, http.ErrServerClosed) {

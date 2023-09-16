@@ -101,6 +101,7 @@ Database
 Controller
 - [ ] design
 - [ ] add https support
+- [ ] implement function for printing values of JsonBody
 
 main.go
 - [ ] gather all the components to the programm

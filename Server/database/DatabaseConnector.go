@@ -30,35 +30,18 @@ type ConnectionSettings struct { // is not named as DatabaseConnector because on
 	User     string //database user
 }
 
-func Goroutine(database_channel chan JsonBody.JsonBody) {
-	database_connector := ConnectionSettings{
+var DatabaseConnection ConnectionSettings
+
+func init() {
+	fmt.Println("initialized")
+	DatabaseConnection := ConnectionSettings{
 		Database: "whisper_voices",
 		Password: "wh15p3r_v01c35", // NOTE password have to be read form configuration file
 		Host:     "localhost",
 		Port:     "3306",
 		User:     "whisper_voices",
 	}
-	for request := range database_channel {
-		var db_response DatabaseResponse.DatabaseResponse
-		switch request.Command {
-		case JsonBody.Add_user:
-			{
-				//communicate with database
-				db_response = database_connector.Add_user(request.User.Tag)
-				//init response
-				var http_response JsonBody.JsonBody
-				http_response.Command = JsonBody.Add_user
-				http_response.Message = db_response.Message
-				//NOTE here could db_response.User be copied to the http_response.User but Add_user's returns it empty
-				//send response
-				HttpResponseChan <- http_response
-			}
-		case JsonBody.Get_user:
-			{
-				//TODO implement
-			}
-		}
-	}
+	_ = DatabaseConnection.is_set()
 }
 
 // NOTE use this before any communication with database
@@ -152,6 +135,7 @@ func (connection_settings *ConnectionSettings) Add_user(tag string) DatabaseResp
 			fmt.Println(DBResponse.Message)
 		}
 	} else {
+		fmt.Println(connection_settings.is_set())
 		fmt.Println("settings are not set")
 	}
 	response.Is_successful = false
