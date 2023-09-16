@@ -68,7 +68,7 @@ It is not named as DatabaseConnector because there is such class in one of depen
 | `is_set`          | method        | bool              | checks if all fields are set          |
 | `does_user_exists`| method        | DatabaseResponse  | checks if user with given tag exists  |
 | `insert_user`     | method        | DatabaseResponse  | inserts user into database            |
-| `Add_user`        | method        | bool              | inserts user into databse             |
+| `Add_user`        | method        | bool              | inserts user into database            |
 
 > Attention! It is not secure to use `insert_user`. you should rather use `Add_user`
 
@@ -97,6 +97,10 @@ Database
 - [x] build DbConnector as a class but not a script as it is now
 - [x] add abbility to add new user to DbConnector
 - [x] add abbility to get user by tag to DbConnector
+- [ ] create key table
+- [ ] dump updated database
+- [ ] add abbility to create Key by user
+- [ ] add abbility to get Key
 
 Controller
 - [ ] design
