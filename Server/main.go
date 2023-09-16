@@ -18,20 +18,10 @@ import (
 	"os"
 )
 
-func database_goroutine() {
-	database_connector := DatabaseConnector.ConnectionSettings{
-		Database: "whisper_voices",
-		Password: "wh15p3r_v01c35", // NOTE password have to be read form configuration file
-		Host:     "localhost",
-		Port:     "3306",
-		User:     "whisper_voices",
-	}
-	response := database_connector.Add_user("foo")
-	fmt.Println(response.Message)
-}
-
 func main() {
-	http.HandleFunc("/", Controller.Send_message)
+	http.HandleFunc("/", Controller.Get_message)
+
+	go DatabaseConnector.Goroutine(Controller.Database_channel)
 
 	err := http.ListenAndServe(":8080", nil)
 	if errors.Is(err, http.ErrServerClosed) {

@@ -10,12 +10,26 @@
 package Controller
 
 import (
+	"Server/JsonBody"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 )
 
-func Send_message(writer http.ResponseWriter, request *http.Request) {
-	fmt.Println("got request successfully")
-	io.WriteString(writer, "this is the response")
+var Database_channel chan JsonBody.JsonBody
+
+func Get_message(writer http.ResponseWriter, request *http.Request) {
+	var body JsonBody.JsonBody
+
+	//get body
+	err := json.NewDecoder(request.Body).Decode(&body)
+	Database_channel <- body
+
+	if err != nil {
+		http.Error(writer, err.Error(), http.StatusBadRequest)
+	}
+	//TODO try to get data from channel
+	fmt.Println("works!")
+	io.WriteString(writer, "UwU\n")
 }

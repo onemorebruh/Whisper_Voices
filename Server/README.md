@@ -70,7 +70,7 @@ It is not named as DatabaseConnector because there is such class in one of depen
 | `insert_user`     | method        | DatabaseResponse  | inserts user into database            |
 | `Add_user`        | method        | bool              | inserts user into databse             |
 
-> Attention! you have to use `Add_user` but not `insert_user`
+> Attention! It is not secure to use `insert_user`. you should rather use `Add_user`
 
 usage example:
 ```go
