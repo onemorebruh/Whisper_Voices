@@ -10,7 +10,6 @@
 package DatabaseConnector
 
 import (
-	"Server/JsonBody"
 	"Server/database/DatabaseModels"
 	"Server/database/DatabaseResponse"
 	"database/sql"
@@ -20,7 +19,7 @@ import (
 	"github.com/google/uuid"
 )
 
-var HttpResponseChan chan JsonBody.JsonBody
+var DatabaseConnection ConnectionSettings
 
 type ConnectionSettings struct { // is not named as DatabaseConnector because one of imports already have such name
 	Database string
@@ -30,22 +29,8 @@ type ConnectionSettings struct { // is not named as DatabaseConnector because on
 	User     string //database user
 }
 
-var DatabaseConnection ConnectionSettings
-
-func init() {
-	fmt.Println("initialized")
-	DatabaseConnection := ConnectionSettings{
-		Database: "whisper_voices",
-		Password: "wh15p3r_v01c35", // NOTE password have to be read form configuration file
-		Host:     "localhost",
-		Port:     "3306",
-		User:     "whisper_voices",
-	}
-	_ = DatabaseConnection.is_set()
-}
-
 // NOTE use this before any communication with database
-func (connection_settings *ConnectionSettings) is_set() bool { //helps to check if all connection data is filled
+func (connection_settings *ConnectionSettings) Is_set() bool { //helps to check if all connection data is filled
 	if connection_settings.Database != "" &&
 		connection_settings.Password != "" &&
 		connection_settings.Host != "" &&
@@ -112,7 +97,7 @@ func (connection_settings *ConnectionSettings) insert_user(user DatabaseModels.U
 func (connection_settings *ConnectionSettings) Add_user(tag string) DatabaseResponse.DatabaseResponse {
 	var response DatabaseResponse.DatabaseResponse
 	//check if sattings are not empty
-	if connection_settings.is_set() {
+	if connection_settings.Is_set() {
 		//get user by tag to check if tag is available
 		var DBResponse DatabaseResponse.DatabaseResponse
 		DBResponse = connection_settings.does_user_exist(tag)
@@ -135,7 +120,7 @@ func (connection_settings *ConnectionSettings) Add_user(tag string) DatabaseResp
 			fmt.Println(DBResponse.Message)
 		}
 	} else {
-		fmt.Println(connection_settings.is_set())
+		fmt.Println(connection_settings.Is_set())
 		fmt.Println("settings are not set")
 	}
 	response.Is_successful = false

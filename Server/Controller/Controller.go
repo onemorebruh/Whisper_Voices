@@ -19,7 +19,19 @@ import (
 	"net/http"
 )
 
-var Database_channel chan JsonBody.JsonBody
+//var DatabaseConnection DatabaseConnector.ConnectionSettings
+
+func init() {
+	fmt.Println("initialized")
+	DatabaseConnector.DatabaseConnection = DatabaseConnector.ConnectionSettings{
+		Database: "whisper_voices",
+		Password: "wh15p3r_v01c35", // NOTE password have to be read form configuration file
+		Host:     "localhost",
+		Port:     "3306",
+		User:     "whisper_voices",
+	}
+	fmt.Println("database connection:", DatabaseConnector.DatabaseConnection.Is_set())
+}
 
 func Get_message(writer http.ResponseWriter, request *http.Request) {
 	var body JsonBody.JsonBody
@@ -27,13 +39,12 @@ func Get_message(writer http.ResponseWriter, request *http.Request) {
 
 	//get body
 	err := json.NewDecoder(request.Body).Decode(&body)
-	fmt.Println("got data request")
 	var db_response DatabaseResponse.DatabaseResponse
 	switch body.Command {
 	case JsonBody.Add_user:
 		{
-			fmt.Println("correct case")
 			//communicate with database
+			fmt.Println(DatabaseConnector.DatabaseConnection.Database)
 			db_response = DatabaseConnector.DatabaseConnection.Add_user(body.User.Tag)
 			//init response
 			http_response.Command = JsonBody.Add_user
@@ -50,6 +61,5 @@ func Get_message(writer http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 	}
-	fmt.Println("works!")
 	io.WriteString(writer, http_response.Message)
 }
