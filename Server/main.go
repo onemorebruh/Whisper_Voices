@@ -10,18 +10,21 @@
 package main
 
 import (
-	DatabaseConnector "Server/database"
+	"Server/Controller"
+	"errors"
 	"fmt"
+	"net/http"
+	"os"
 )
 
 func main() {
-	database_connector := DatabaseConnector.ConnectionSettings{
-		Database: "whisper_voices",
-		Password: "wh15p3r_v01c35", // NOTE password have to be read form configuration file
-		Host:     "localhost",
-		Port:     "3306",
-		User:     "whisper_voices",
+	http.HandleFunc("/", Controller.Get_message)
+
+	err := http.ListenAndServe(":8080", nil)
+	if errors.Is(err, http.ErrServerClosed) {
+		fmt.Printf("server closed\n")
+	} else if err != nil {
+		fmt.Printf("error starting server: %s\n", err)
+		os.Exit(1)
 	}
-	response := database_connector.Add_user("foo")
-	fmt.Println(response.Message)
 }

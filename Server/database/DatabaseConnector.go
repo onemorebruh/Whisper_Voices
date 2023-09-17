@@ -19,6 +19,8 @@ import (
 	"github.com/google/uuid"
 )
 
+var DatabaseConnection ConnectionSettings
+
 type ConnectionSettings struct { // is not named as DatabaseConnector because one of imports already have such name
 	Database string
 	Password string
@@ -28,7 +30,7 @@ type ConnectionSettings struct { // is not named as DatabaseConnector because on
 }
 
 // NOTE use this before any communication with database
-func (connection_settings *ConnectionSettings) is_set() bool { //helps to check if all connection data is filled
+func (connection_settings *ConnectionSettings) Is_set() bool { //helps to check if all connection data is filled
 	if connection_settings.Database != "" &&
 		connection_settings.Password != "" &&
 		connection_settings.Host != "" &&
@@ -95,7 +97,7 @@ func (connection_settings *ConnectionSettings) insert_user(user DatabaseModels.U
 func (connection_settings *ConnectionSettings) Add_user(tag string) DatabaseResponse.DatabaseResponse {
 	var response DatabaseResponse.DatabaseResponse
 	//check if sattings are not empty
-	if connection_settings.is_set() {
+	if connection_settings.Is_set() {
 		//get user by tag to check if tag is available
 		var DBResponse DatabaseResponse.DatabaseResponse
 		DBResponse = connection_settings.does_user_exist(tag)
@@ -118,6 +120,7 @@ func (connection_settings *ConnectionSettings) Add_user(tag string) DatabaseResp
 			fmt.Println(DBResponse.Message)
 		}
 	} else {
+		fmt.Println(connection_settings.Is_set())
 		fmt.Println("settings are not set")
 	}
 	response.Is_successful = false

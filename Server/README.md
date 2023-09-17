@@ -32,7 +32,9 @@ Here you can read about each scheme Server uses
 
 Here you can read about each class in this programm
 
-### DatabaseModels - User
+### DatabaseModels
+
+#### User
 
 User is a class used while communicating with database
 
@@ -42,6 +44,15 @@ User is a class used while communicating with database
 | `Tag`             | field         | string        | unique user tag   |
 | `Allow_history`   | field         | bool          | check User scheme |
 | `Allow_screenshot`| field         | bool          | check User scheme |
+
+#### DBcommand
+
+DBcommand is a Enum
+
+| Possible values   |
+|-------------------|
+| `Add_user`        |
+| `Get_user`        |
 
 ### DatabaseResponse
 
@@ -70,7 +81,7 @@ It is not named as DatabaseConnector because there is such class in one of depen
 | `insert_user`     | method        | DatabaseResponse  | inserts user into database            |
 | `Add_user`        | method        | bool              | inserts user into databse             |
 
-> Attention! you have to use `Add_user` but not `insert_user`
+> Attention! It is not secure to use `insert_user`. you should rather use `Add_user`
 
 usage example:
 ```go
@@ -90,6 +101,56 @@ expexted output:
 user successfully registred
 ```
 
+### JsonBody
+
+JsonBody is a class for parsing and sending json via
+
+| Name      | Type                  | Tag       | Description                   |
+|-----------|-----------------------|-----------|-------------------------------|
+| `User`    | DatabaseModels.User   | user      | database user                 |
+| `Address` | string                | address   | address of request sender     |
+| `Message` | string                | message   | status message                |
+| `Command` | DBcommand             | command   | command to do on server       |
+
+### Controller
+
+Controller is a compilation of buissness logic functions
+
+| Name          | Description       |
+|---------------|-------------------|
+| `Get_message` | call to the Server|
+
+usage example:
+```go
+func main() {
+	http.HandleFunc("/", Controller.Get_message)
+
+	err := http.ListenAndServe(":8080", nil)
+	if errors.Is(err, http.ErrServerClosed) {
+		fmt.Printf("server closed\n")
+	} else if err != nil {
+		fmt.Printf("error starting server: %s\n", err)
+		os.Exit(1)
+	}
+}
+```
+
+example of request:
+```js
+{
+    "user": {
+        "tag": "username"
+    },
+    "command": 0
+}
+```
+
+example of response:
+```
+user successfully registred
+```
+
+
 ## TODO
 
 Database
@@ -98,11 +159,9 @@ Database
 - [x] add abbility to add new user to DbConnector
 - [x] add abbility to get user by tag to DbConnector
 
-Listener
-- [ ] build
-
-Responder
-- [ ] build
+Controller
+- [x] design
+- [ ] add https support
 
 main.go
 - [ ] gather all the components to the programm
