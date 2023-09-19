@@ -79,7 +79,7 @@ It is not named as DatabaseConnector because there is such class in one of depen
 | `is_set`          | method        | bool              | checks if all fields are set          |
 | `does_user_exists`| method        | DatabaseResponse  | checks if user with given tag exists  |
 | `insert_user`     | method        | DatabaseResponse  | inserts user into database            |
-| `Add_user`        | method        | bool              | inserts user into databse             |
+| `Add_user`        | method        | bool              | inserts user into database            |
 
 > Attention! It is not secure to use `insert_user`. you should rather use `Add_user`
 
@@ -156,12 +156,19 @@ user successfully registred
 Database
 - [x] move user model to separate file
 - [x] build DbConnector as a class but not a script as it is now
-- [x] add abbility to add new user to DbConnector
-- [x] add abbility to get user by tag to DbConnector
+- [x] add ability to add new user to DbConnector
+- [x] add ability to get user by tag to DbConnector
+- [x] create invite table
+- [x] dump updated database
+- [x] add ability to create Invite by user
+- [x] add ability to get Invite
+- [ ] implement function for creating word combinations for invites
+- [ ] make start script
 
 Controller
 - [x] design
 - [ ] add https support
+- [ ] add function for getting invites
 
 main.go
 - [ ] gather all the components to the programm
