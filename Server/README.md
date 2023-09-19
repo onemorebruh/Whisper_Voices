@@ -95,16 +95,19 @@ user successfully registred
 Database
 - [x] move user model to separate file
 - [x] build DbConnector as a class but not a script as it is now
-- [x] add abbility to add new user to DbConnector
-- [x] add abbility to get user by tag to DbConnector
-- [ ] create key table
-- [ ] dump updated database
-- [ ] add abbility to create Key by user
-- [ ] add abbility to get Key
+- [x] add ability to add new user to DbConnector
+- [x] add ability to get user by tag to DbConnector
+- [x] create invite table
+- [x] dump updated database
+- [x] add ability to create Invite by user
+- [x] add ability to get Invite
+- [ ] implement function for creating word combinations for invites
+- [ ] make start script
 
 Controller
 - [ ] design
 - [ ] add https support
+- [ ] add function for getting invites
 
 main.go
 - [ ] gather all the components to the programm

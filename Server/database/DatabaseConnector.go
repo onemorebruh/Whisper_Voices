@@ -62,7 +62,7 @@ func Goroutine(database_channel chan JsonBody.JsonBody) {
 }
 
 // NOTE use this before any communication with database
-func (connection_settings *ConnectionSettings) is_set() bool { //helps to check if all connection data is filled
+func (connection_settings *ConnectionSettings) Is_set() bool { //helps to check if all connection data is filled
 	if connection_settings.Database != "" &&
 		connection_settings.Password != "" &&
 		connection_settings.Host != "" &&
@@ -74,8 +74,9 @@ func (connection_settings *ConnectionSettings) is_set() bool { //helps to check 
 	}
 }
 
+// communication with user table
 func (connection_settings *ConnectionSettings) does_user_exist(tag string) DatabaseResponse.DatabaseResponse {
-	var response DatabaseResponse.DatabaseResponse
+	var db_response DatabaseResponse.DatabaseResponse
 	user := new(DatabaseModels.User) //not actually used for now
 	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", connection_settings.User, connection_settings.Password, connection_settings.Host, connection_settings.Port, connection_settings.Database))
 
@@ -88,19 +89,19 @@ func (connection_settings *ConnectionSettings) does_user_exist(tag string) Datab
 
 	if err := row.Scan(&user.Id, &user.Tag, &user.Allow_hostory, &user.Allow_screenshot); err != nil {
 		if err == sql.ErrNoRows {
-			response.Message = "such user does not exist"
-			response.Is_successful = false
+			db_response.Message = "such user does not exist"
+			db_response.Is_successful = false
 		} else {
-			response.Is_successful = true
-			response.Message = "such user already exist"
+			db_response.Is_successful = true
+			db_response.Message = "such user already exist"
 			fmt.Println(tag, user.Tag)
 		}
 
-		return response
+		return db_response
 	}
-	response.Is_successful = false
-	response.Message = "unable to connect to the database. perhaps some settings are not filled"
-	return response
+	db_response.Is_successful = false
+	db_response.Message = "unable to connect to the database. perhaps some settings are not filled"
+	return db_response
 }
 
 func (connection_settings *ConnectionSettings) insert_user(user DatabaseModels.User) DatabaseResponse.DatabaseResponse {
@@ -127,9 +128,9 @@ func (connection_settings *ConnectionSettings) insert_user(user DatabaseModels.U
 }
 
 func (connection_settings *ConnectionSettings) Add_user(tag string) DatabaseResponse.DatabaseResponse {
-	var response DatabaseResponse.DatabaseResponse
+	var db_response DatabaseResponse.DatabaseResponse
 	//check if sattings are not empty
-	if connection_settings.is_set() {
+	if connection_settings.Is_set() {
 		//get user by tag to check if tag is available
 		var DBResponse DatabaseResponse.DatabaseResponse
 		DBResponse = connection_settings.does_user_exist(tag)
@@ -145,7 +146,7 @@ func (connection_settings *ConnectionSettings) Add_user(tag string) DatabaseResp
 				return insert_response
 			} else {
 				fmt.Println(DBResponse.User.Tag, DBResponse.User.Id)
-				response.Message = DBResponse.Message //"such user exists"
+				db_response.Message = DBResponse.Message //"such user exists"
 			}
 
 		} else {
@@ -154,6 +155,54 @@ func (connection_settings *ConnectionSettings) Add_user(tag string) DatabaseResp
 	} else {
 		fmt.Println("settings are not set")
 	}
-	response.Is_successful = false
-	return response
+	db_response.Is_successful = false
+	return db_response
+}
+
+//communication with invite table
+
+func (connection_settings *ConnectionSettings) insert_invite(user uuid.UUID) DatabaseResponse.DatabaseResponse {
+	var word = "TODO" //TODO implement function i did in python for generating passwords
+	var result DatabaseResponse.DatabaseResponse
+	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", connection_settings.User, connection_settings.Password, connection_settings.Host, connection_settings.Port, connection_settings.Database))
+
+	if err != nil {
+		result.Is_successful = false
+		result.Message = fmt.Sprintf("error while connecting to database: %s", err.Error())
+		return result
+	}
+	defer db.Close()
+
+	insert, err := db.Query("INSERT INTO invite (id, user, value) VALUES (?, ?, ?)", uuid.New(), user, word)
+	if err != nil {
+		result.Is_successful = false
+		result.Message = fmt.Sprintf("error while insert: %s", err.Error())
+		return result
+	}
+	result.Message = "invite successfully created"
+	result.Is_successful = true
+	result.Invite = word
+	defer insert.Close()
+	return result
+
+}
+
+func (connection_settings *ConnectionSettings) Add_invite(tag string) DatabaseResponse.DatabaseResponse {
+	var db_response DatabaseResponse.DatabaseResponse
+	var user DatabaseModels.User
+
+	if connection_settings.Is_set() {
+
+		db_response = connection_settings.does_user_exist(tag)
+		if db_response.Is_successful { // if user exists
+
+			user = db_response.User
+			db_response = connection_settings.insert_invite(user.Id)
+
+		}
+	} else {
+		db_response.Is_successful = false
+		db_response.Message = "settings are not set"
+	}
+	return db_response
 }

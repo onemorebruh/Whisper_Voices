@@ -9,10 +9,11 @@
 
 package DatabaseResponse
 
-import User "Server/database/DatabaseModels"
+import "Server/database/DatabaseModels"
 
 type DatabaseResponse struct {
 	Message       string
 	Is_successful bool
-	User          User.User
+	User          DatabaseModels.User
+	Invite        string //user don't need to know ids
 }
