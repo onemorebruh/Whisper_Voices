@@ -15,7 +15,6 @@ import (
 	"Server/database/DatabaseResponse"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 )
 
@@ -36,6 +35,7 @@ func init() {
 func Get_message(writer http.ResponseWriter, request *http.Request) {
 	var body JsonBody.JsonBody
 	var http_response JsonBody.JsonBody
+	var stringified_response []byte
 
 	//get body
 	err := json.NewDecoder(request.Body).Decode(&body)
@@ -51,15 +51,24 @@ func Get_message(writer http.ResponseWriter, request *http.Request) {
 			http_response.Message = db_response.Message
 			//NOTE here could db_response.User be copied to the http_response.User but Add_user does not return it
 			//send response
+			stringified_response, err = json.Marshal(http_response)
+			if err != nil {
+				fmt.Println(err.Error())
+				panic("error while encoding json")
+			}
 		}
 	case JsonBody.Get_user:
 		{
 			//TODO implement
+		}
+	case JsonBody.Create_invite:
+		{
+
 		}
 	}
 
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 	}
-	io.WriteString(writer, http_response.Message)
+	writer.Write(stringified_response)
 }

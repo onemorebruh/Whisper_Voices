@@ -12,10 +12,11 @@ In this project you can find:
 ## TODO
 
 Server
-- [ ] make it get http(s)? requests
-- [ ] make it send http(s)? requests
+- [x] make it get http requests
+- [x] make it send http requests
 - [x] make it create new users in database
 - [x] make it read user by tag
+- [ ] add https support
 
 DesktopClient
 - [ ] design it
