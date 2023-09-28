@@ -12,6 +12,7 @@ package DatabaseConnector
 import (
 	"Server/database/DatabaseModels"
 	"Server/database/DatabaseResponse"
+	PasswordGenerator "Server/database/PasswordGeneration"
 	"database/sql"
 	"fmt"
 
@@ -20,6 +21,10 @@ import (
 )
 
 var DatabaseConnection ConnectionSettings
+
+func init() {
+	PasswordGenerator.Password_generator = PasswordGenerator.Init()
+}
 
 type ConnectionSettings struct { // is not named as DatabaseConnector because one of imports already have such name
 	Database string
@@ -45,7 +50,7 @@ func (connection_settings *ConnectionSettings) Is_set() bool { //helps to check 
 // communication with user table
 func (connection_settings *ConnectionSettings) does_user_exist(tag string) DatabaseResponse.DatabaseResponse {
 	var db_response DatabaseResponse.DatabaseResponse
-	user := new(DatabaseModels.User) //not actually used for now
+	var user DatabaseModels.User
 	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", connection_settings.User, connection_settings.Password, connection_settings.Host, connection_settings.Port, connection_settings.Database))
 
 	if err != nil {
@@ -60,9 +65,9 @@ func (connection_settings *ConnectionSettings) does_user_exist(tag string) Datab
 			db_response.Message = "such user does not exist"
 			db_response.Is_successful = false
 		} else {
+			db_response.User = user
 			db_response.Is_successful = true
-			db_response.Message = "such user already exist"
-			fmt.Println(tag, user.Tag)
+			db_response.Message = "such user already exists"
 		}
 
 		return db_response
@@ -95,7 +100,7 @@ func (connection_settings *ConnectionSettings) insert_user(user DatabaseModels.U
 	return result
 }
 
-func (connection_settings *ConnectionSettings) Add_user(tag string) DatabaseResponse.DatabaseResponse {
+func (connection_settings *ConnectionSettings) Create_user(tag string) DatabaseResponse.DatabaseResponse {
 	var db_response DatabaseResponse.DatabaseResponse
 	//check if sattings are not empty
 	if connection_settings.Is_set() {
@@ -128,10 +133,46 @@ func (connection_settings *ConnectionSettings) Add_user(tag string) DatabaseResp
 	return db_response
 }
 
+func (connection_settings *ConnectionSettings) Get_user(tag string) DatabaseResponse.DatabaseResponse {
+	var user DatabaseModels.User
+	var db_response DatabaseResponse.DatabaseResponse
+
+	if connection_settings.Is_set() {
+		db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", connection_settings.User, connection_settings.Password, connection_settings.Host, connection_settings.Port, connection_settings.Database))
+
+		if err != nil {
+			db_response.Is_successful = false
+			db_response.Message = fmt.Sprintf("error while connecting to database: %s", err.Error())
+			return db_response
+		}
+		defer db.Close()
+
+		row := db.QueryRow("SELECT * FROM user WHERE tag = ?", tag)
+
+		if err := row.Scan(&user.Id, &user.Tag, &user.Allow_hostory, &user.Allow_screenshot); err != nil {
+			if err == sql.ErrNoRows {
+				db_response.Message = "such user does not exist"
+				db_response.Is_successful = false
+			} else {
+				db_response.Is_successful = true
+				db_response.Message = "such user already exists"
+				fmt.Println(tag, user.Tag)
+			}
+
+			return db_response
+		}
+	}
+
+	db_response.Is_successful = false
+	db_response.Message = "unable to connect to the database. perhaps some settings are not filled"
+
+	return db_response
+}
+
 //communication with invite table
 
 func (connection_settings *ConnectionSettings) insert_invite(user uuid.UUID) DatabaseResponse.DatabaseResponse {
-	var word = "TODO" //TODO implement function i did in python for generating passwords
+	var word = PasswordGenerator.Password_generator.Create_password()
 	var result DatabaseResponse.DatabaseResponse
 	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", connection_settings.User, connection_settings.Password, connection_settings.Host, connection_settings.Port, connection_settings.Database))
 
